@@ -1,8 +1,9 @@
 <% if (server === 'adonis') { %>const pkg = require('../package')
 const resolve = require('path').resolve
 <% } else { %>const pkg = require('./package')
-<% } %><% if (ui === 'vuetify') { %>
-const nodeExternals = require('webpack-node-externals')
+<% } %>
+<% if (ui === 'vuetify') { %>
+const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
 <% } %>
 module.exports = {
   mode: '<%= mode %>',
@@ -21,22 +22,28 @@ module.exports = {
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }<% if (ui === 'vuetify') { %>,
-      { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' }<% } %>
+      {
+        rel: 'stylesheet',
+        href:
+          'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons'
+      }<% } %>
     ]
   },
 
   /*
   ** Customize the progress-bar color
   */
-  loading: { color: '#3B8070' },
+  loading: { color: '#fff' },
 
   /*
   ** Global CSS
   */
   css: [<% if (ui === 'element-ui') { %>
-    'element-ui/lib/theme-default/index.css'<% } else if (ui === 'tailwind') { %>
+    'element-ui/lib/theme-chalk/index.css'<% } else if (ui === 'tailwind') { %>
     '~/assets/css/tailwind.css'<% } else if (ui === 'vuetify') { %>
-    'vuetify/src/stylus/main.styl'<% } %>
+    '~/assets/style/app.styl'<% } else if (ui === 'iview') { %>
+    'iview/dist/styles/iview.css'<% } else if (ui === 'ant-design-vue') { %>
+    'ant-design-vue/dist/antd.css'<% } %>
   ],
 
   /*
@@ -44,21 +51,25 @@ module.exports = {
   */
   plugins: [<% if (ui === 'element-ui') { %>
     '@/plugins/element-ui'<% } else if (ui === 'vuetify') { %>
-    '@/plugins/vuetify'<% } %>
+    '@/plugins/vuetify'<% } else if (ui === 'iview') { %>
+    '@/plugins/iview'<% } else if (ui === 'ant-design-vue') { %>
+    '@/plugins/antd-ui'<% } %>
   ],
 
   /*
   ** Nuxt.js modules
   */
   modules: [<% if (axios === 'yes') { %>
-    // Doc: https://github.com/nuxt-community/axios-module#usage
+    // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios'<% } %><% if (ui === 'bootstrap') { %>,
     // Doc: https://bootstrap-vue.js.org/docs/
     'bootstrap-vue/nuxt'<% } %><% if (ui === 'bulma') { %>,
     // Doc:https://github.com/nuxt-community/modules/tree/master/packages/bulma
-    '@nuxtjs/bulma'<% } %>
+    '@nuxtjs/bulma'<% } %><% if (ui === 'buefy') { %>,
+    // Doc: https://buefy.github.io/#/documentation
+    'nuxt-buefy'<% } %><% if (pwa === 'yes') { %>,
+    '@nuxtjs/pwa'<% } %>
   ],<% if (axios === 'yes') { %>
-
   /*
   ** Axios module configuration
   */
@@ -71,14 +82,20 @@ module.exports = {
   */
   build: {<% if (ui === 'bulma') { %>
     postcss: {
-      plugins: {
-        'postcss-cssnext': {
-          features: {
-            customProperties: false
-          }
+      preset: {
+        features: {
+          customProperties: false
         }
       }
-    },<% } %>
+    },<% } %><% if (ui === 'vuetify') { %>
+    transpile: ['vuetify/lib'],
+    plugins: [new VuetifyLoaderPlugin()],
+    loaders: {
+      stylus: {
+        import: ["~assets/style/variables.styl"]
+      }
+    },
+    <% } %>
     /*
     ** You can extend webpack config here
     */
@@ -91,13 +108,6 @@ module.exports = {
           loader: 'eslint-loader',
           exclude: /(node_modules)/
         })
-      }<% } %><% if (ui === 'vuetify') { %>
-      if (ctx.isServer) {
-        config.externals = [
-          nodeExternals({
-            whitelist: [/^vuetify/]
-          })
-        ]
       }<% } %>
     }
   }

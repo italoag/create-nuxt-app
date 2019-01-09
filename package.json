@@ -1,7 +1,7 @@
 {
   "name": "create-nuxt-app",
-  "version": "1.1.1",
-  "description": "Create Nuxt.js App in seconds.",
+  "version": "2.1.1",
+  "description": "Create a Nuxt.js App in seconds.",
   "bin": "cli.js",
   "files": [
     "cli.js",
@@ -13,13 +13,16 @@
     "type": "git"
   },
   "scripts": {
-    "test": "ava --verbose"
+    "test": "ava --verbose",
+    "test:snapshot": "ava --verbose --update-snapshots"
   },
   "dependencies": {
+    "cross-spawn": "^6.0.5",
     "lodash": "^4.17.4",
     "minimist": "^1.2.0",
     "sao": "^0.22.5",
-    "superb": "^2.0.0"
+    "superb": "^2.0.0",
+    "validate-npm-package-name": "^3.0.0"
   },
   "devDependencies": {
     "ava": "^0.23.0"

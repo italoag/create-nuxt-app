@@ -57,18 +57,42 @@ test('use micro', async t => {
 
 test('use axios', async t => {
   await verifyPkg(t, {
-    axios: 'yes'
+    features: ['axios']
+  })
+})
+
+test('use jest', async t => {
+  await verifyPkg(t, {
+    test: 'jest'
+  })
+})
+
+test('use ava', async t => {
+  await verifyPkg(t, {
+    test: 'ava'
   })
 })
 
 test('use eslint', async t => {
   await verifyPkg(t, {
-    eslint: 'yes'
+    features: ['linter']
   })
 })
 
 test('use yarn', async t => {
   await verifyPkg(t, {
     pm: 'yarn'
+  })
+})
+
+test('use prettier', async t => {
+  await verifyPkg(t, {
+    features: ['prettier']
+  })
+})
+
+test('use pwa', async t => {
+  await verifyPkg(t, {
+    features: ['pwa']
   })
 })
